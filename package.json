@@ -29,6 +29,7 @@
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
+    "expo-updates": "~0.24.12",
     "expo-web-browser": "~12.8.2",
     "firebase": "^10.9.0",
     "lodash": "^4.17.21",

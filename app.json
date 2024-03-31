@@ -36,6 +36,12 @@
         "projectId": "522a941c-ed93-488a-91fe-3a7e2a780495"
       }
     },
-    "owner": "rawestmoreland"
+    "owner": "rawestmoreland",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/522a941c-ed93-488a-91fe-3a7e2a780495"
+    }
   }
 }
