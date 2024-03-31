@@ -4,7 +4,14 @@ import { useAuth } from '@/context/auth';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, TextInput, Text, HelperText } from 'react-native-paper';
+import {
+  Button,
+  TextInput,
+  Text,
+  HelperText,
+  Portal,
+  Snackbar,
+} from 'react-native-paper';
 import { appInfo } from '@/constants/appInfo';
 import { useState } from 'react';
 
@@ -13,7 +20,7 @@ export default function LogIn() {
   const params = useLocalSearchParams();
 
   const [hidePassword, setHidePassword] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [snackMessage, setSnackMessage] = useState('');
 
   const { signIn } = useAuth();
 
@@ -33,14 +40,16 @@ export default function LogIn() {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setSnackMessage('');
     const { email, password } = data;
-    setIsLoading(true);
     try {
-      await signIn(email, password);
+      const authData = await signIn(email, password);
+
+      if (authData.error) {
+        setSnackMessage('Failed to authenticate with this email / password.');
+      }
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -123,15 +132,15 @@ export default function LogIn() {
         </View>
         <View style={{ gap: 8 }}>
           <Button
-            loading={isLoading}
-            disabled={isLoading}
+            loading={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting}
             mode='contained'
             onPress={form.handleSubmit(onSubmit)}
           >
             Login
           </Button>
           <Button
-            disabled={isLoading}
+            disabled={form.formState.isSubmitting}
             onPress={() => {
               router.push('/(auth)/create-account');
             }}
@@ -140,6 +149,14 @@ export default function LogIn() {
           </Button>
         </View>
       </View>
+      <Portal>
+        <Snackbar
+          visible={Boolean(snackMessage)}
+          onDismiss={() => setSnackMessage('')}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }
