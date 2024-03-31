@@ -61,6 +61,7 @@ export default function DatePicker({
           value={date}
           is24Hour={false}
           display='spinner'
+          textColor='black'
           onChange={handleChange}
         />
       )}
