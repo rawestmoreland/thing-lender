@@ -2,9 +2,8 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NewBorrowerForm as BorrowerForm } from '../Modals/LoanThingModal';
-import { View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { TBorrower } from '@/lib/types/pocketbase';
 import { useEffect } from 'react';
 import { RecordModel } from 'pocketbase';
 
@@ -48,17 +47,19 @@ export function NewBorrowerForm({
   }, [borrowerData]);
 
   return (
-    <View style={{ width: '80%', gap: 8 }}>
-      <BorrowerForm form={form} />
-      <Button
-        loading={isLoading}
-        disabled={isLoading}
-        icon={editing ? 'pencil' : 'plus'}
-        mode='contained'
-        onPress={form.handleSubmit(onFormSubmit)}
-      >
-        {editing ? 'Update' : 'Add'}
-      </Button>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ padding: 24, width: '80%', gap: 8 }}>
+        <BorrowerForm form={form} />
+        <Button
+          loading={isLoading}
+          disabled={isLoading}
+          icon={editing ? 'pencil' : 'plus'}
+          mode='contained'
+          onPress={form.handleSubmit(onFormSubmit)}
+        >
+          {editing ? 'Update' : 'Add'}
+        </Button>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
