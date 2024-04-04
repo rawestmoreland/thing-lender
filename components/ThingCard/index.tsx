@@ -1,7 +1,7 @@
 import { iconMap } from '@/constants/iconMap';
 import { EThingType, TLentThing, TThingType } from '@/lib/types/pocketbase';
 import { StyleSheet, View } from 'react-native';
-import { Button, Icon, Surface, Text } from 'react-native-paper';
+import { Button, Icon, IconButton, Surface, Text } from 'react-native-paper';
 import { isEmpty } from 'lodash';
 
 export function ThingCard({
@@ -34,7 +34,7 @@ export function ThingCard({
   return (
     <Surface style={styles.surface} elevation={2}>
       <View style={styles.inner}>
-        <View>
+        <View style={{ justifyContent: 'space-between' }}>
           <View style={styles.row}>
             <Icon source={iconMap[EThingType[thingType.name]]} size={30} />
             <Text variant='bodyLarge'>{thingName}</Text>
@@ -83,18 +83,27 @@ export function ThingCard({
         >
           {isLent ? 'Returned' : 'Lend it'}
         </Button>
-        <Button
-          disabled={isLoading}
-          onPress={() => {
-            setThingIdToDelete(thingId);
-            setDeleteModalOpen(true);
-          }}
-          compact
-          icon='trash-can-outline'
-          mode='contained'
-        >
-          Remove it
-        </Button>
+        <View style={styles.iconButtonRow}>
+          <IconButton
+            disabled={isLoading}
+            onPress={() => {
+              setThingIdToDelete(thingId);
+              setDeleteModalOpen(true);
+            }}
+            iconColor='red'
+            icon='trash-can-outline'
+            mode='contained'
+          />
+          <IconButton
+            disabled={isLoading}
+            onPress={() => {
+              setThingIdToDelete(thingId);
+              setDeleteModalOpen(true);
+            }}
+            icon='pencil'
+            mode='contained'
+          />
+        </View>
       </View>
     </Surface>
   );
@@ -128,5 +137,9 @@ const styles = StyleSheet.create({
   pastDueText: {
     color: 'red',
     fontWeight: 'bold',
+  },
+  iconButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
