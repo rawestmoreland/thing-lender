@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	// "net/http"
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
@@ -15,12 +14,6 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/mailer"
-
-	// "github.com/pocketbase/pocketbase/tools/types"
-	// "github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	// "github.com/pocketbase/pocketbase/models/schema"
-	// "github.com/pocketbase/pocketbase/tools/types"
 )
 
 func main() {
@@ -30,21 +23,7 @@ func main() {
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		e.Router.POST("/remind/email", func(c echo.Context) error {
 
-			admin, _ := c.Get(apis.ContextAdminKey).(*models.Admin)
-			record, _ := c.Get(apis.ContextAuthRecordKey).(*models.Record)
-
-			log.Println((record))
-
-			var isGuest = admin == nil && record == nil
-
-			// This is a guest or not a registered user
-			if isGuest || record == nil {
-				return c.JSON(401, map[string]any{"success": false, "message": "Unauthorized"})
-			}
-
 			data := apis.RequestInfo(c).Data
-
-			log.Println(data)
 
 			borrower_id, ok := data["borrower_id"]
 			if !ok {
@@ -115,7 +94,7 @@ func main() {
 			}
 
 			return c.JSON(200, map[string]bool{"success": true})
-		})
+		}, apis.RequireRecordAuth())
 
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
 		return nil
