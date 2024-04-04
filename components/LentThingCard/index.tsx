@@ -1,3 +1,4 @@
+import { sendReminder } from '@/api/sendReminder';
 import { iconMap } from '@/constants/iconMap';
 import { EThingType, TThingType } from '@/lib/types/pocketbase';
 import { StyleSheet, View } from 'react-native';
@@ -6,6 +7,7 @@ import { Button, Icon, Surface, Text } from 'react-native-paper';
 export function LentThingCard({
   isLoading,
   onReturnedPress,
+  onReminderPress,
   borrower,
   thingName,
   dueDate,
@@ -14,6 +16,7 @@ export function LentThingCard({
 }: {
   isLoading: boolean;
   onReturnedPress: () => void;
+  onReminderPress: () => void;
   borrower: string;
   thingName: string;
   dueDate: string;
@@ -60,6 +63,7 @@ export function LentThingCard({
             compact
             mode='contained'
             icon='bell-outline'
+            onPress={onReminderPress}
           >
             Remind
           </Button>
