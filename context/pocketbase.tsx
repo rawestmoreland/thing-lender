@@ -9,8 +9,7 @@ const PocketBaseContext = createContext<{ pb: Client | null }>({
 
 export const usePocketBase = () => useContext(PocketBaseContext);
 
-// const POCKETBASE_URL = 'https://thing-lender.fly.dev';
-const POCKETBASE_URL = 'http://localhost:8090';
+const POCKETBASE_URL = 'https://thing-lender.fly.dev';
 
 export const PocketBaseProvider = ({
   children,

@@ -1,4 +1,3 @@
-import { sendReminder } from '@/api/sendReminder';
 import { iconMap } from '@/constants/iconMap';
 import { EThingType, TThingType } from '@/lib/types/pocketbase';
 import { StyleSheet, View } from 'react-native';
