@@ -21,7 +21,7 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [snackBarMessage, setSnackBarMessage] = useState<string | null>(null);
-  const [isLoadingState, setIsLoadingState] = useState(false);
+  const [isReminding, setIsReminding] = useState(false);
 
   const { data, isLoading, error } = useGetLentThings();
   const { mutate: deleteLentThing, isPending: deletingLentThing } =
@@ -35,7 +35,7 @@ export default function Home() {
 
   const handleRemindPress = async (borrower_id: string, thing_id: string) => {
     setSnackBarMessage(null);
-    setIsLoadingState(true);
+    setIsReminding(true);
     const response = await sendReminder(pb, { borrower_id, thing_id });
 
     if (response.success) {
@@ -44,7 +44,7 @@ export default function Home() {
       setSnackBarMessage(response.message ?? 'Failed to send a reminder');
     }
 
-    setIsLoadingState(false);
+    setIsReminding(false);
   };
 
   if (isLoading)
@@ -73,7 +73,8 @@ export default function Home() {
           renderItem={({ item }) => {
             return (
               <LentThingCard
-                isLoading={deletingLentThing || isLoadingState}
+                isLoading={deletingLentThing}
+                isReminding={isReminding}
                 onReturnedPress={() => deleteLentThing(item.id)}
                 onReminderPress={() =>
                   handleRemindPress(item.borrower.id, item.thing.id)

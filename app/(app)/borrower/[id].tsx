@@ -58,9 +58,7 @@ export default function Borrower() {
     <SafeAreaView style={styles.container}>
       <NewBorrowerForm
         editing
-        name={borrowerData?.name ?? ''}
-        email={borrowerData?.email ?? ''}
-        phone={borrowerData?.phone_number ?? ''}
+        borrowerData={borrowerData}
         onFormSubmit={onFormSubmit}
         isLoading={updatingBorrower}
       />

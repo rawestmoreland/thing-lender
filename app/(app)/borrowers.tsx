@@ -1,14 +1,32 @@
 import { BorrowerCard } from '@/components/Modals/BorrowerCard';
-import { useAuth } from '@/context/auth';
+import { DeleteBorrowerModal } from '@/components/Modals/DeleteBorrowerModal';
 import Colors from '@/design/Colors';
+import { useDeleteBorrower } from '@/hooks/DELETE/useDeleteBorrower';
 import { useGetBorrowers } from '@/hooks/GET/useGetBorrowers';
 import { TBorrower } from '@/lib/types/pocketbase';
+import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function Page() {
-  const { user } = useAuth();
   const { data: borrowers, isLoading: borrowersLoading } = useGetBorrowers();
+  const {
+    mutate: deleteBorrower,
+    isPending: deletingBorrower,
+    isSuccess: deleteSuccess,
+  } = useDeleteBorrower();
+
+  const [selectedBorrowerToDelete, setSelectedBorrowerToDelete] = useState<
+    string | null
+  >();
+
+  const handleDeleteBorrower = () => {
+    deleteBorrower(selectedBorrowerToDelete ?? '');
+  };
+
+  useEffect(() => {
+    if (deleteSuccess) setSelectedBorrowerToDelete(null);
+  }, [deleteSuccess]);
 
   if (borrowersLoading) {
     return (
@@ -26,12 +44,19 @@ export default function Page() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }: { item: TBorrower }) => (
           <BorrowerCard
+            handleDelete={() => setSelectedBorrowerToDelete(item.id)}
             borrowerId={item.id}
             name={item.name}
             email={item.email}
             phone={item.phone_number}
           />
         )}
+      />
+      <DeleteBorrowerModal
+        isLoading={deletingBorrower}
+        isOpen={Boolean(selectedBorrowerToDelete)}
+        onDeleteBorrower={handleDeleteBorrower}
+        onDismiss={() => setSelectedBorrowerToDelete(null)}
       />
     </SafeAreaView>
   );

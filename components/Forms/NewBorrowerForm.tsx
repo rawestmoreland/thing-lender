@@ -4,19 +4,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NewBorrowerForm as BorrowerForm } from '../Modals/LoanThingModal';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
+import { TBorrower } from '@/lib/types/pocketbase';
+import { useEffect } from 'react';
+import { RecordModel } from 'pocketbase';
 
 export function NewBorrowerForm({
   editing = false,
-  email,
-  name,
-  phone,
+  borrowerData,
   onFormSubmit,
   isLoading,
 }: {
   editing?: boolean;
-  email?: string;
-  name?: string;
-  phone?: string;
+  borrowerData?: RecordModel | undefined;
   onFormSubmit: (data: any) => void;
   isLoading: boolean;
 }) {
@@ -32,11 +31,21 @@ export function NewBorrowerForm({
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: name ?? '',
-      email: email ?? '',
-      phone: phone ?? '',
+      name: borrowerData?.name ?? '',
+      email: borrowerData?.email ?? '',
+      phone: borrowerData?.phone_number ?? '',
     },
   });
+
+  useEffect(() => {
+    if (!borrowerData) return;
+
+    form.reset({
+      name: borrowerData.name,
+      email: borrowerData.email,
+      phone: borrowerData.phone_number,
+    });
+  }, [borrowerData]);
 
   return (
     <View style={{ width: '80%', gap: 8 }}>

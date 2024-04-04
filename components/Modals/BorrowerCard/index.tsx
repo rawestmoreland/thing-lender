@@ -7,11 +7,13 @@ export function BorrowerCard({
   name,
   email,
   phone,
+  handleDelete,
 }: {
   borrowerId: string;
   name: string;
   email: string;
   phone?: string | undefined;
+  handleDelete: () => void;
 }) {
   const router = useRouter();
 
@@ -37,6 +39,7 @@ export function BorrowerCard({
             mode='contained-tonal'
             iconColor='red'
             icon='trash-can-outline'
+            onPress={handleDelete}
           />
           <IconButton
             onPress={() => router.navigate(`/borrower/${borrowerId}`)}

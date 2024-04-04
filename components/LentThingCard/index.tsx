@@ -5,6 +5,7 @@ import { Button, Icon, Surface, Text } from 'react-native-paper';
 
 export function LentThingCard({
   isLoading,
+  isReminding,
   onReturnedPress,
   onReminderPress,
   borrower,
@@ -14,6 +15,7 @@ export function LentThingCard({
   thingType,
 }: {
   isLoading: boolean;
+  isReminding: boolean;
   onReturnedPress: () => void;
   onReminderPress: () => void;
   borrower: string;
@@ -58,10 +60,11 @@ export function LentThingCard({
             Returned
           </Button>
           <Button
-            disabled={isLoading}
+            loading={isReminding}
+            disabled={isReminding}
             compact
             mode='contained'
-            icon='bell-outline'
+            icon='email-fast-outline'
             onPress={onReminderPress}
           >
             Remind

@@ -20,7 +20,7 @@ export function useCreateBorrower() {
         ?.collection('borrowers')
         .create({ ...payload, owner_user_id: user?.id }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [EQueryKey.Borrower] });
+      queryClient.invalidateQueries({ queryKey: [EQueryKey.Borrowers] });
     },
   });
 }
