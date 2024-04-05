@@ -3,6 +3,7 @@ import { EThingType, TLentThing, TThingType } from '@/lib/types/pocketbase';
 import { StyleSheet, View } from 'react-native';
 import { Button, Icon, IconButton, Surface, Text } from 'react-native-paper';
 import { isEmpty } from 'lodash';
+import { useRouter } from 'expo-router';
 
 export function ThingCard({
   thingId,
@@ -31,6 +32,8 @@ export function ThingCard({
   lentRelationship: TLentThing | undefined;
   isLoading: boolean;
 }) {
+  const router = useRouter();
+
   return (
     <Surface style={styles.surface} elevation={2}>
       <View style={styles.inner}>
@@ -96,10 +99,7 @@ export function ThingCard({
           />
           <IconButton
             disabled={isLoading}
-            onPress={() => {
-              setThingIdToDelete(thingId);
-              setDeleteModalOpen(true);
-            }}
+            onPress={() => router.navigate(`/thing/${thingId}`)}
             icon='pencil'
             mode='contained'
           />

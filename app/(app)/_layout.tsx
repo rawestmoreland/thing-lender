@@ -92,6 +92,20 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name='thing/[id]'
+        options={{
+          title: 'Edit thing',
+          headerTransparent: true,
+          headerLeft: () => {
+            return (
+              <Link href='/inventory'>
+                <TabBarIcon name='arrow-left' color='black' />
+              </Link>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
         name='new-borrower'
         options={{
           title: 'New Borrower',
