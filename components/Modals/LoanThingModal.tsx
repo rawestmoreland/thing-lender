@@ -16,7 +16,6 @@ import DatePicker from '../DateTimePicker';
 import { useCreateBorrower } from '@/hooks/CREATE/useCreateBorrower';
 import { useCreateLentThing } from '@/hooks/CREATE/useCreateLentThing';
 import { useRouter } from 'expo-router';
-import { Countries, countryFlags } from '@/constants/countries';
 
 export function LoanThingModal({
   isOpen,
@@ -224,25 +223,22 @@ export const NewBorrowerForm = ({ form }: { form: any }) => {
         )}
       </View>
       <View style={{ gap: 4 }}>
-        <View style={{ flexDirection: 'row' }}>
-          <View>{countryFlags[Countries.USA]}</View>
-          <Controller
-            control={form.control}
-            name='phone'
-            render={({ field }) => (
-              <TextInput
-                label='Phone'
-                mode='outlined'
-                dense
-                keyboardType='phone-pad'
-                value={field.value}
-                onChangeText={field.onChange}
-                error={form.formState.errors.phone}
-                placeholder='Borrower phone'
-              />
-            )}
-          />
-        </View>
+        <Controller
+          control={form.control}
+          name='phone'
+          render={({ field }) => (
+            <TextInput
+              label='Phone'
+              mode='outlined'
+              dense
+              keyboardType='phone-pad'
+              value={field.value}
+              onChangeText={field.onChange}
+              error={form.formState.errors.phone}
+              placeholder='Borrower phone'
+            />
+          )}
+        />
         {form.formState.errors.phone && (
           <HelperText
             type='error'
