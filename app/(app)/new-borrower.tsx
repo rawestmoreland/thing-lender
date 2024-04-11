@@ -1,15 +1,11 @@
 import { NewBorrowerForm } from '@/components/Forms/NewBorrowerForm';
 import Colors from '@/design/Colors';
 import { useCreateBorrower } from '@/hooks/CREATE/useCreateBorrower';
+
 import { useRouter } from 'expo-router';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { Portal, Snackbar } from 'react-native-paper';
 
 export default function NewBorrower() {

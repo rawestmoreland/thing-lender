@@ -6,7 +6,7 @@ export type TReminderDataEmail = {
   thing_id: string;
 };
 
-export async function sendReminder(
+export async function sendReminderEmail(
   pb: Client | null,
   data: TReminderDataEmail
 ): Promise<Record<string, any>> {

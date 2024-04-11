@@ -10,7 +10,7 @@ import { FloatingMenu } from '@/components/FloatingMenu';
 import { useAuth } from '@/context/auth';
 import Colors from '@/design/Colors';
 import { useDeleteLentThing } from '@/hooks/DELETE/useDeleteLentThing';
-import { sendReminder } from '@/api/sendReminder';
+import { sendReminderEmail } from '@/api/sendReminder';
 import { usePocketBase } from '@/context/pocketbase';
 
 export default function Home() {
@@ -36,7 +36,7 @@ export default function Home() {
   const handleRemindPress = async (borrower_id: string, thing_id: string) => {
     setSnackBarMessage(null);
     setIsReminding(true);
-    const response = await sendReminder(pb, { borrower_id, thing_id });
+    const response = await sendReminderEmail(pb, { borrower_id, thing_id });
 
     if (response.success) {
       setSnackBarMessage('Reminder sent');
