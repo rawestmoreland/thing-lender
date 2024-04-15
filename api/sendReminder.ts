@@ -6,7 +6,7 @@ export type TReminderDataEmail = {
   thing_id: string;
 };
 
-export async function sendReminder(
+export async function sendReminderEmail(
   pb: Client | null,
   data: TReminderDataEmail
 ): Promise<Record<string, any>> {
@@ -16,6 +16,29 @@ export async function sendReminder(
 
   try {
     const response = await pb.send(EApiPaths.EMAIL_REMINDER, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    return response;
+  } catch (error: any) {
+    return { success: false, message: error.message ?? 'Unknown error' };
+  }
+}
+
+export async function sendReminderSms(
+  pb: Client | null,
+  data: TReminderDataEmail
+) {
+  if (!pb) {
+    throw new Error('Pocketbase client not initialized');
+  }
+
+  try {
+    const response = await pb.send(EApiPaths.SMS_REMINDER, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',

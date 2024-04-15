@@ -10,7 +10,7 @@ import { FloatingMenu } from '@/components/FloatingMenu';
 import { useAuth } from '@/context/auth';
 import Colors from '@/design/Colors';
 import { useDeleteLentThing } from '@/hooks/DELETE/useDeleteLentThing';
-import { sendReminder } from '@/api/sendReminder';
+import { sendReminderEmail, sendReminderSms } from '@/api/sendReminder';
 import { usePocketBase } from '@/context/pocketbase';
 
 export default function Home() {
@@ -33,15 +33,42 @@ export default function Home() {
     return normalized;
   }, [data]);
 
-  const handleRemindPress = async (borrower_id: string, thing_id: string) => {
+  const handleRemindPress = async (
+    type: 'email' | 'sms',
+    borrower_id: string,
+    thing_id: string
+  ) => {
     setSnackBarMessage(null);
     setIsReminding(true);
-    const response = await sendReminder(pb, { borrower_id, thing_id });
 
-    if (response.success) {
-      setSnackBarMessage('Reminder sent');
-    } else {
-      setSnackBarMessage(response.message ?? 'Failed to send a reminder');
+    switch (type) {
+      case 'email':
+        const emailResponse = await sendReminderEmail(pb, {
+          borrower_id,
+          thing_id,
+        });
+        if (emailResponse.success) {
+          setSnackBarMessage('Reminder sent');
+        } else {
+          setSnackBarMessage(
+            emailResponse.message ?? 'Failed to send a reminder'
+          );
+        }
+        break;
+      case 'sms':
+      default:
+        const smsResponse = await sendReminderSms(pb, {
+          borrower_id,
+          thing_id,
+        });
+        if (smsResponse.success) {
+          setSnackBarMessage('Reminder sent');
+        } else {
+          setSnackBarMessage(
+            smsResponse.message ?? 'Failed to send a reminder'
+          );
+        }
+        break;
     }
 
     setIsReminding(false);
@@ -73,12 +100,12 @@ export default function Home() {
           renderItem={({ item }) => {
             return (
               <LentThingCard
+                borrower_id={item.borrower.id}
+                thing_id={item.thing.id}
                 isLoading={deletingLentThing}
                 isReminding={isReminding}
                 onReturnedPress={() => deleteLentThing(item.id)}
-                onReminderPress={() =>
-                  handleRemindPress(item.borrower.id, item.thing.id)
-                }
+                onReminderPress={handleRemindPress}
                 thingName={item.thing.name}
                 borrower={item.borrower.name}
                 dueDate={item.dueDate}

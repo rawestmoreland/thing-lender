@@ -72,7 +72,7 @@ export function ThingCard({
       </View>
       <View style={styles.rightButtons}>
         <Button
-          loading={isLoading}
+          loading={isLent ? isLoading : false}
           onPress={() => {
             if (isLent && !isEmpty(lentRelationship)) {
               markReturned(lentRelationship.id);
