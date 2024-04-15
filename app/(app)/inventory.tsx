@@ -106,6 +106,7 @@ export default function Inventory() {
       {Boolean(normalizedInventory) ? (
         <SectionList
           style={styles.cardStyle}
+          // @ts-ignore
           sections={normalizedInventory}
           keyExtractor={(item, index) => item.id + index.toString()}
           renderItem={({ item }: { item: TThing }) => (

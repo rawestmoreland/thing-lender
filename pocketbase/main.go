@@ -13,7 +13,6 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/mailer"
-	"github.com/joho/godotenv"
 
 	twilio "github.com/twilio/twilio-go"
 
@@ -22,10 +21,11 @@ import (
 
 func init() {
 	// loads values from .env into the system
-	_, sidExists := os.LookupEnv("TWILIO_ACCOUNT_SID")
-	_, tokenExists := os.LookupEnv("TWILIO_AUTH_TOKEN")
-	if err := godotenv.Load();( err != nil || !sidExists || !tokenExists) {
-			log.Print("No .env file found")
+	sid := os.Getenv("TWILIO_ACCOUNT_SID")
+	token := os.Getenv("TWILIO_AUTH_TOKEN")
+
+	if (sid == "" || token == "") {
+		log.Fatal("Twilio credentials not found")
 	}
 }
 
@@ -37,7 +37,7 @@ func main() {
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		e.Router.POST("/remind/sms", func (c echo.Context) error  {
 			
-			twilio_phone_number, exists := os.LookupEnv("TWILIO_PHONE_NUMBER")
+			twilio_phone_number := os.Getenv("TWILIO_PHONE_NUMBER")
 
 			data := apis.RequestInfo(c).Data
 
@@ -51,10 +51,10 @@ func main() {
 				return apis.NewBadRequestError("Thing ID is required", nil)
 			}
 
-			// thing_record, err := app.Dao().FindRecordById("things", thing_id.(string))
-			// if err != nil {
-			// 	return apis.NewNotFoundError("Thing not found", nil)
-			// }
+			thing_record, err := app.Dao().FindRecordById("things", thing_id.(string))
+			if err != nil {
+				return apis.NewNotFoundError("Thing not found", nil)
+			}
 			lent_thing_record, err := app.Dao().FindFirstRecordByFilter("lent_things", "thing_id = {:thing_id}", dbx.Params{"thing_id": thing_id.(string)})
 			if err != nil {
 				return apis.NewBadRequestError("Thing not lent", nil)
@@ -67,24 +67,31 @@ func main() {
 				return apis.NewApiError(429, "You can send one alert per 24 hours", nil)
 			}
 
-			// owner_record, err := app.Dao().FindRecordById("users", thing_record.Get("owner_user_id").(string))
-			// if err != nil {
-			// 	return apis.NewNotFoundError("Owner record not found", nil)
-			// }
+			owner_record, err := app.Dao().FindRecordById("users", thing_record.Get("owner_user_id").(string))
+			if err != nil {
+				return apis.NewNotFoundError("Owner record not found", nil)
+			}
 			borrower_record, err := app.Dao().FindRecordById("borrowers", borrower_id.(string))
 			if err != nil {
 				return apis.NewNotFoundError("Borrower record not found", nil)
 			}
 
 			params := &openapi.CreateMessageParams{}
-			params.SetTo(borrower_record.Get("phone").(string))
-			params.SetFrom("+18444300143")
-			params.SetBody("Hello! This is a reminder!")
+			params.SetTo(borrower_record.Get("phone_number").(string))
+			params.SetFrom(twilio_phone_number)
+			params.SetBody(fmt.Sprintf(`Hi %s! It looks like the owner of the item you borrowed (%s) wants it back. Can you return it to %s please?`, borrower_record.Get("name"), thing_record.Get("name"), owner_record.Get("name")))
 
 			resp, err := TwilioClient.Api.CreateMessage(params)
 			if err != nil {
 				return apis.NewApiError(500, "Error sending SMS", err)
 			} else {
+
+				lent_thing_record.Set("last_sms_reminder_sent_at", time.Now().UTC())
+
+				if err := app.Dao().SaveRecord(lent_thing_record); err != nil {
+					return c.JSON(500, map[string]any{"success": false, "message": "Error saving lent thing record"})
+				}
+
 				return c.JSON(200, map[string]any{"success": true, "message_id": resp.Sid})
 			}
 
@@ -156,7 +163,7 @@ func main() {
 
 			app.NewMailClient().Send(message)
 
-			lent_thing_record.Set("last_reminder_sent", time.Now().UTC())
+			lent_thing_record.Set("last_email_reminder_sent_at", time.Now().UTC())
 
 			if err := app.Dao().SaveRecord(lent_thing_record); err != nil {
 				return c.JSON(500, map[string]any{"success": false, "message": "Error saving lent thing record"})

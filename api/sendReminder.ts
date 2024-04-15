@@ -28,3 +28,26 @@ export async function sendReminderEmail(
     return { success: false, message: error.message ?? 'Unknown error' };
   }
 }
+
+export async function sendReminderSms(
+  pb: Client | null,
+  data: TReminderDataEmail
+) {
+  if (!pb) {
+    throw new Error('Pocketbase client not initialized');
+  }
+
+  try {
+    const response = await pb.send(EApiPaths.SMS_REMINDER, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    return response;
+  } catch (error: any) {
+    return { success: false, message: error.message ?? 'Unknown error' };
+  }
+}
