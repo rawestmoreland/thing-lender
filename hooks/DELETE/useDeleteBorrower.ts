@@ -13,6 +13,9 @@ export function useDeleteBorrower() {
       await queryClient.invalidateQueries({
         queryKey: [EQueryKey.Borrowers],
       });
+      await queryClient.invalidateQueries({
+        queryKey: [EQueryKey.LentThings],
+      });
     },
   });
 }

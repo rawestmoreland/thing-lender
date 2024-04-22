@@ -90,6 +90,16 @@ export default function Inventory() {
         }
       }
     });
+    // Sort the data array based on section title
+    data.sort((a, b) => {
+      if (a.title === ESectionTitles.LENT) {
+        return -1;
+      } else if (b.title === ESectionTitles.LENT) {
+        return 1;
+      } else {
+        return a.title.localeCompare(b.title);
+      }
+    });
     return data;
   }, [inventory]);
 
