@@ -95,7 +95,7 @@ func main() {
 				return c.JSON(200, map[string]any{"success": true, "message_id": resp.Sid})
 			}
 
-		})
+		}, apis.RequireRecordAuth())
 
 		e.Router.POST("/remind/email", func(c echo.Context) error {
 
