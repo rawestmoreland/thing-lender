@@ -1,25 +1,49 @@
 import { iconMap } from '@/constants/iconMap';
 import { EThingType, TThingType } from '@/lib/types/pocketbase';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, Icon, Surface, Text } from 'react-native-paper';
+import { Button, Icon, Menu, Surface, Text } from 'react-native-paper';
 
 export function LentThingCard({
+  borrower_id,
+  thing_id,
   isLoading,
+  isReminding,
   onReturnedPress,
+  onReminderPress,
   borrower,
   thingName,
   dueDate,
   pastDue = false,
   thingType,
 }: {
+  borrower_id: string;
+  thing_id: string;
   isLoading: boolean;
+  isReminding: boolean;
   onReturnedPress: () => void;
+  onReminderPress: (
+    type: 'email' | 'sms',
+    borrower_id: string,
+    thing_id: string
+  ) => void;
   borrower: string;
   thingName: string;
   dueDate: string;
   pastDue?: boolean;
   thingType: TThingType;
 }) {
+  const [reminderMenuOpen, setReminderMenuOpen] = useState(false);
+
+  const openReminderMenu = () => setReminderMenuOpen(true);
+  const closeReminderMenu = () => setReminderMenuOpen(false);
+
+  useEffect(() => {
+    if (isReminding) {
+      closeReminderMenu();
+    }
+  }, [isReminding]);
+
   return (
     <Surface style={styles.surface} elevation={2}>
       <View style={styles.inner}>
@@ -55,14 +79,33 @@ export function LentThingCard({
           >
             Returned
           </Button>
-          <Button
-            disabled={isLoading}
-            compact
-            mode='contained'
-            icon='bell-outline'
+          <Menu
+            visible={reminderMenuOpen}
+            onDismiss={closeReminderMenu}
+            anchor={
+              <Button
+                loading={isReminding}
+                disabled={isReminding}
+                mode='contained'
+                icon='bell-outline'
+                onPress={openReminderMenu}
+              >
+                Remind
+              </Button>
+            }
+            anchorPosition='bottom'
           >
-            Remind
-          </Button>
+            <Menu.Item
+              leadingIcon='email-fast-outline'
+              title='Email'
+              onPress={() => onReminderPress('email', borrower_id, thing_id)}
+            />
+            <Menu.Item
+              leadingIcon='message-text-outline'
+              title='SMS'
+              onPress={() => onReminderPress('sms', borrower_id, thing_id)}
+            />
+          </Menu>
         </View>
       </View>
     </Surface>

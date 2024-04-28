@@ -1,5 +1,6 @@
 import { usePocketBase } from '@/context/pocketbase';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { EQueryKey } from '../types';
 
 export type TUpdateBorrowerPayload = {
   name: string;
@@ -15,7 +16,10 @@ export function useUpdateBorrower(id: string) {
     mutationFn: async (payload: TUpdateBorrowerPayload) =>
       await pb?.collection('borrowers').update(id, payload),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['borrower', id] });
+      await queryClient.invalidateQueries({
+        queryKey: [EQueryKey.Borrower, id],
+      });
+      await queryClient.invalidateQueries({ queryKey: [EQueryKey.Borrowers] });
     },
   });
 }

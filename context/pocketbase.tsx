@@ -9,6 +9,8 @@ const PocketBaseContext = createContext<{ pb: Client | null }>({
 
 export const usePocketBase = () => useContext(PocketBaseContext);
 
+const POCKETBASE_URL = 'https://thing-lender.fly.dev';
+
 export const PocketBaseProvider = ({
   children,
 }: {
@@ -24,7 +26,7 @@ export const PocketBaseProvider = ({
         initial: await AsyncStorage.getItem('pb_auth'),
         clear: async () => AsyncStorage.removeItem('pb_auth'),
       });
-      const pbInstance = new PocketBase('https://thing-lender.fly.dev', store);
+      const pbInstance = new PocketBase(POCKETBASE_URL, store);
       setPb(pbInstance);
     };
 

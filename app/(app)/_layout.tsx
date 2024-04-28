@@ -1,6 +1,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Stack } from 'expo-router';
+import Colors from '@/design/Colors';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -17,12 +18,14 @@ export default function AppLayout() {
         name='home'
         options={{
           title: 'On Loan',
+          headerTransparent: true,
         }}
       />
       <Stack.Screen
         name='settings'
         options={{
           title: 'Settings',
+          headerTransparent: true,
           headerLeft: () => {
             return (
               <Link href='/home'>
@@ -36,6 +39,7 @@ export default function AppLayout() {
         name='inventory'
         options={{
           title: 'My Things',
+          headerTransparent: true,
           headerLeft: () => {
             return (
               <Link href='/home'>
@@ -56,6 +60,7 @@ export default function AppLayout() {
         name='borrowers'
         options={{
           title: 'My Borrowers',
+          headerTransparent: true,
           headerLeft: () => {
             return (
               <Link href='/home'>
@@ -76,6 +81,7 @@ export default function AppLayout() {
         name='borrower/[id]'
         options={{
           title: 'Edit borrower',
+          headerTransparent: true,
           headerLeft: () => {
             return (
               <Link href='/borrowers'>
@@ -86,9 +92,24 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name='thing/[id]'
+        options={{
+          title: 'Edit thing',
+          headerTransparent: true,
+          headerLeft: () => {
+            return (
+              <Link href='/inventory'>
+                <TabBarIcon name='arrow-left' color='black' />
+              </Link>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
         name='new-borrower'
         options={{
           title: 'New Borrower',
+          headerTransparent: true,
           headerLeft: () => (
             <Link href='/borrowers'>
               <TabBarIcon name='arrow-left' color='black' />
@@ -100,6 +121,7 @@ export default function AppLayout() {
         name='new-thing'
         options={{
           title: 'Add a thing',
+          headerTransparent: true,
           headerLeft: () => {
             return (
               <Link href='/inventory'>

@@ -1,10 +1,11 @@
 import { NewBorrowerForm } from '@/components/Forms/NewBorrowerForm';
 import Colors from '@/design/Colors';
 import { useCreateBorrower } from '@/hooks/CREATE/useCreateBorrower';
+
 import { useRouter } from 'expo-router';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { Portal, Snackbar } from 'react-native-paper';
 
 export default function NewBorrower() {
@@ -44,7 +45,10 @@ export default function NewBorrower() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <NewBorrowerForm
         isLoading={creatingBorrower}
         onFormSubmit={onFormSubmit}
@@ -57,7 +61,7 @@ export default function NewBorrower() {
           {snackMessage}
         </Snackbar>
       </Portal>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

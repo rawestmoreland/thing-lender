@@ -39,12 +39,20 @@ export default function CreateAccount() {
         .min(2, { message: 'First name must be at least 2 characters' })
         .or(z.literal('')),
     })
-    .superRefine(({ password, passwordConfirm }, ctx) => {
+    .superRefine(({ password, passwordConfirm, email }, ctx) => {
       if (password !== passwordConfirm) {
         ctx.addIssue({
           message: 'Passwords do not match',
           code: 'custom',
           path: ['passwordConfirm'],
+        });
+      }
+
+      if (email.includes('butts')) {
+        ctx.addIssue({
+          message: 'No butts, Wilson',
+          code: 'custom',
+          path: ['email'],
         });
       }
       return {};
@@ -195,10 +203,20 @@ export default function CreateAccount() {
           </View>
         </View>
         <View style={{ gap: 8 }}>
-          <Button mode='contained' onPress={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={form.formState.isSubmitting}
+            loading={form.formState.isSubmitting}
+            mode='contained'
+            onPress={form.handleSubmit(onSubmit)}
+          >
             Create account
           </Button>
-          <Button onPress={() => router.back()}>Back to login</Button>
+          <Button
+            disabled={form.formState.isSubmitting}
+            onPress={() => router.back()}
+          >
+            Back to login
+          </Button>
         </View>
       </View>
       <Portal>

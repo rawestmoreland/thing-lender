@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Portal, Snackbar } from 'react-native-paper';
 
 import { useGetBorrowerById } from '@/hooks/GET/useGetBorrowerById';
@@ -55,12 +55,13 @@ export default function Borrower() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <NewBorrowerForm
         editing
-        name={borrowerData?.name ?? ''}
-        email={borrowerData?.email ?? ''}
-        phone={borrowerData?.phone_number ?? ''}
+        borrowerData={borrowerData}
         onFormSubmit={onFormSubmit}
         isLoading={updatingBorrower}
       />
@@ -72,7 +73,7 @@ export default function Borrower() {
           {snackMessage}
         </Snackbar>
       </Portal>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
