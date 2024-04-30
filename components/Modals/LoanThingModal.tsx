@@ -3,22 +3,15 @@ import { Picker } from '@react-native-picker/picker';
 import { RecordModel } from 'pocketbase';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { TouchableOpacity, View } from 'react-native';
-import {
-  Button,
-  HelperText,
-  Modal,
-  Portal,
-  TextInput,
-  Text,
-} from 'react-native-paper';
+import { View } from 'react-native';
+import Modal from 'react-native-modal';
+import { Button, HelperText, Portal, TextInput } from 'react-native-paper';
 import { CountryPicker } from 'react-native-country-codes-picker';
 import { z } from 'zod';
 import DatePicker from '../DateTimePicker';
 import { useCreateBorrower } from '@/hooks/CREATE/useCreateBorrower';
 import { useCreateLentThing } from '@/hooks/CREATE/useCreateLentThing';
 import { useRouter } from 'expo-router';
-import Colors from '@/constants/Colors';
 import { CountryCode } from 'libphonenumber-js';
 
 export type TCountryCode = {
@@ -120,73 +113,73 @@ export function LoanThingModal({
   }, [newLentThing]);
 
   return (
-    <Portal>
-      <Modal
-        contentContainerStyle={{
+    <Modal
+      isVisible={isOpen}
+      onBackdropPress={onDismiss}
+      avoidKeyboard
+      backdropOpacity={0.7}
+    >
+      <View
+        style={{
           backgroundColor: 'white',
-          padding: 16,
-          width: '75%',
-          alignSelf: 'center',
+          padding: 20,
           borderRadius: 8,
+          gap: 8,
         }}
-        visible={isOpen}
-        onDismiss={onDismiss}
       >
-        <View style={{ gap: 8 }}>
-          {Boolean(borrowers.length) && !showNewBorrowerForm ? (
-            <Picker
-              selectedValue={selectedBorrower}
-              onValueChange={(itemValue, _itemIndex) =>
-                setSelectedBorrower(itemValue)
-              }
-            >
-              {borrowers.map((borrower) => (
-                <Picker.Item
-                  key={borrower.id}
-                  label={borrower.name}
-                  value={borrower.id}
-                />
-              ))}
-            </Picker>
-          ) : (
-            <NewBorrowerForm
-              CCPickerOpen={CCPickerOpen}
-              setCCPickerOpen={setCCPickerOpen}
-              countryCode={countryCode}
-              setCountryCode={setCountryCode}
-              form={form}
-            />
-          )}
-          {Boolean(borrowers.length) && (
-            <Button
-              onPress={toggleNewBorrowerForm}
-              icon={showNewBorrowerForm ? 'arrow-left' : 'plus'}
-              mode='outlined'
-            >
-              {showNewBorrowerForm ? `Pick a borrower` : `New borrower`}
-            </Button>
-          )}
-          <DatePicker
-            initialDate={new Date()}
-            date={dueDate}
-            setDate={setDueDate}
-          />
-          <Button
-            onPress={
-              showNewBorrowerForm
-                ? form.handleSubmit(onSubmit)
-                : onCreateLentThing
+        {Boolean(borrowers.length) && !showNewBorrowerForm ? (
+          <Picker
+            selectedValue={selectedBorrower}
+            onValueChange={(itemValue, _itemIndex) =>
+              setSelectedBorrower(itemValue)
             }
-            disabled={!dueDate || creatingBorrower || creatingLoan}
-            loading={creatingLoan || creatingBorrower}
-            mode='contained'
-            icon='handshake-outline'
           >
-            Lend it
+            {borrowers.map((borrower) => (
+              <Picker.Item
+                key={borrower.id}
+                label={borrower.name}
+                value={borrower.id}
+              />
+            ))}
+          </Picker>
+        ) : (
+          <NewBorrowerForm
+            CCPickerOpen={CCPickerOpen}
+            setCCPickerOpen={setCCPickerOpen}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
+            form={form}
+          />
+        )}
+        {Boolean(borrowers.length) && (
+          <Button
+            onPress={toggleNewBorrowerForm}
+            icon={showNewBorrowerForm ? 'arrow-left' : 'plus'}
+            mode='outlined'
+          >
+            {showNewBorrowerForm ? `Pick a borrower` : `New borrower`}
           </Button>
-        </View>
-      </Modal>
-    </Portal>
+        )}
+        <DatePicker
+          initialDate={new Date()}
+          date={dueDate}
+          setDate={setDueDate}
+        />
+        <Button
+          onPress={
+            showNewBorrowerForm
+              ? form.handleSubmit(onSubmit)
+              : onCreateLentThing
+          }
+          disabled={!dueDate || creatingBorrower || creatingLoan}
+          loading={creatingLoan || creatingBorrower}
+          mode='contained'
+          icon='handshake-outline'
+        >
+          Lend it
+        </Button>
+      </View>
+    </Modal>
   );
 }
 

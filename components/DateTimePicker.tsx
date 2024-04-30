@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Keyboard, Platform, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import formatTime from '@/lib/utils/formatTime';
+import { set } from 'lodash';
 
 export default function DatePicker({
   initialDate,
@@ -16,6 +17,8 @@ export default function DatePicker({
   date: Date;
   setDate: (date: Date) => void;
 }) {
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
   initialDate.setHours(12, 0, 0, 0);
 
   const [show, setShow] = useState(false);
@@ -35,10 +38,36 @@ export default function DatePicker({
     }
   };
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      // If the keyboard is visible, hide the date picker
+      setIsKeyboardVisible(true);
+      setShow(false);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <View>
       {Platform.OS === 'ios' && (
-        <Button mode='contained' onPress={() => setShow(!show)}>
+        <Button
+          mode='contained'
+          onPress={() => {
+            if (!show) {
+              Keyboard.dismiss();
+              setShow(true);
+            } else {
+              setShow(false);
+            }
+          }}
+        >
           {`Due: ${date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
