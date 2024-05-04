@@ -2,7 +2,13 @@ import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { useGetLentThings } from '@/hooks/GET/useGetLentThings';
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, Portal, Snackbar, Text } from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  Portal,
+  Snackbar,
+  Text,
+} from 'react-native-paper';
 import { LentThingCard } from '@/components/LentThingCard';
 import { normalizeLentThings } from '@/lib/utils/normalizeLentThings';
 import { usePathname, useRouter } from 'expo-router';
@@ -84,13 +90,19 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       {!Boolean(normalizedData.length) ? (
-        <View style={{ width: '80%' }}>
+        <View style={{ width: '80%', alignItems: 'center', gap: 8 }}>
           <Text
             variant='headlineMedium'
             style={{ fontWeight: '600', textAlign: 'center' }}
           >
             No items on loan
           </Text>
+          <Button
+            mode='contained'
+            onPress={() => router.navigate('/inventory')}
+          >
+            Pick from your inventory
+          </Button>
         </View>
       ) : (
         <FlatList

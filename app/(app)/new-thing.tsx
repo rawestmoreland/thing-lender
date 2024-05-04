@@ -20,10 +20,12 @@ export default function NewThing() {
     if (!thingTypes) return [];
 
     return (
-      thingTypes?.map((type) => ({
-        label: type.name,
-        value: type.id,
-      })) ?? []
+      thingTypes
+        ?.sort((a, b) => (a.is_last ? 1 : -1))
+        .map((type) => ({
+          label: type.name,
+          value: type.id,
+        })) ?? []
     );
   }, [thingTypes]);
 

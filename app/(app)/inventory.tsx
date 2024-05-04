@@ -4,13 +4,14 @@ import { TThing } from '@/lib/types/pocketbase';
 import { RecordModel } from 'pocketbase';
 import { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView, SectionList, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import Colors from '@/design/Colors';
 import { DeleteThingModal } from '@/components/Modals/DeleteThingModal';
 import { useDeleteThing } from '@/hooks/DELETE/useDeleteThing';
 import { useGetBorrowers } from '@/hooks/GET/useGetBorrowers';
 import { LoanThingModal } from '@/components/Modals/LoanThingModal';
 import { useDeleteLentThing } from '@/hooks/DELETE/useDeleteLentThing';
+import { router } from 'expo-router';
 
 type TSectionListData = {
   title: string;
@@ -113,7 +114,7 @@ export default function Inventory() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {Boolean(normalizedInventory) ? (
+      {Boolean(normalizedInventory?.length) ? (
         <SectionList
           style={styles.cardStyle}
           // @ts-ignore
@@ -140,19 +141,21 @@ export default function Inventory() {
           )}
         />
       ) : (
-        <View style={{ width: '80%', gap: 8 }}>
+        <View style={{ gap: 12 }}>
           <Text
             variant='headlineMedium'
             style={{ fontWeight: '600', textAlign: 'center' }}
           >
             Nothing here 😢
           </Text>
-          <Text
-            variant='headlineMedium'
-            style={{ fontWeight: '600', textAlign: 'center' }}
+          <Button
+            compact
+            mode='contained'
+            icon='plus'
+            onPress={() => router.navigate('/new-thing')}
           >
-            Add some items to your inventory
-          </Text>
+            Add something
+          </Button>
         </View>
       )}
       <DeleteThingModal
