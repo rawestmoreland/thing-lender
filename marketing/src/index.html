@@ -55,7 +55,18 @@
             name="email"
             class="border-2 border-black rounded-lg p-2 w-full"
             placeholder="Email"
+            required
           />
+          <select
+            class="border-2 border-black rounded-lg w-full p-2"
+            required
+            name="platform"
+            id="platform"
+          >
+            <option value="" disabled selected>Choose your device</option>
+            <option value="ios">iOS</option>
+            <option value="android">Android</option>
+          </select>
           <button
             type="submit"
             class="bg-[#f9a826] text-black font-semibold rounded-lg p-2 w-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
