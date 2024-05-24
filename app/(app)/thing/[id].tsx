@@ -43,15 +43,15 @@ export default function Thing() {
   }, [thingTypes]);
 
   const onFormSubmit = async (data: any) => {
-    const { name, thing_type } = data;
+    const { name } = data;
 
-    updateThing({ name, thing_type });
+    updateThing({ name, thing_type: selectedThingType as string });
   };
 
   useEffect(() => {
     if (!newThing) return;
 
-    router.back();
+    router.push('/inventory');
   }, [newThing]);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function Thing() {
       if (!isEmpty(updateError?.data?.data.email)) {
         setSnackMessage("This borrower's email already exists");
       } else {
-        setSnackMessage('Error creating this borrower.');
+        setSnackMessage('Error updating this thing.');
       }
     }
   }, [updateError]);
