@@ -43,9 +43,9 @@ export default function Thing() {
   }, [thingTypes]);
 
   const onFormSubmit = async (data: any) => {
-    const { name } = data;
+    const { name, thingType: thing_type } = data;
 
-    updateThing({ name, thing_type: selectedThingType as string });
+    updateThing({ name, thing_type });
   };
 
   useEffect(() => {
@@ -68,7 +68,6 @@ export default function Thing() {
 
   useEffect(() => {
     if (thingData) {
-      console.log(thingData);
       setSelectedThingType(thingData.thing_type);
     }
   }, [thingData]);
