@@ -41,14 +41,22 @@ export function NewThingForm({
       .string()
       .min(2, 'Name must be at least 2 characters long')
       .max(40, 'Name must be at most 40 characters long'),
+    thingType: z.string(),
   });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      thingType: '',
     },
   });
+
+  useEffect(() => {
+    if (selectedThingType) {
+      form.setValue('thingType', selectedThingType);
+    }
+  }, [selectedThingType]);
 
   useEffect(() => {
     if (!newThing) return;
@@ -103,12 +111,21 @@ export function NewThingForm({
             }`
           : 'Select thing type'}
       </Button>
-      <PickThingTypeModal
-        isOpen={isPickerVisible}
-        onDismiss={() => setIsPickerVisible(false)}
-        thingTypes={thingTypeOptions}
-        setSelectedThingType={setSelectedThingType}
-        selectedThingType={selectedThingType}
+      <Controller
+        control={form.control}
+        name='thingType'
+        render={({ field }) => (
+          <PickThingTypeModal
+            isOpen={isPickerVisible}
+            onDismiss={() => setIsPickerVisible(false)}
+            thingTypes={thingTypeOptions}
+            setSelectedThingType={(value) => {
+              field.onChange(value);
+              setSelectedThingType(value);
+            }}
+            selectedThingType={selectedThingType}
+          />
+        )}
       />
       <Button
         loading={isPending || form.formState.isSubmitting}
@@ -122,7 +139,7 @@ export function NewThingForm({
         }
         onPress={form.handleSubmit(onFormSubmit)}
       >
-        Add
+        {editing ? 'Update' : 'Add'}
       </Button>
     </View>
   );
