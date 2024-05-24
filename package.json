@@ -1,7 +1,7 @@
 {
   "name": "thinglender",
   "main": "expo-router/entry",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "dev": "expo start",
     "start": "expo start",
